@@ -87,6 +87,47 @@
       .replaceAll("'", "&#039;");
   }
 
+  let audioCtx = null;
+
+  function getAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    if (!audioCtx) audioCtx = new AudioContextClass();
+    if (audioCtx.state === "suspended") void audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playTone(ctx, freq, startTime, duration, type, peakGain) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.02);
+  }
+
+  function playFeedbackSound(isCorrect) {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      if (isCorrect) {
+        playTone(ctx, 880, now, 0.12, "sine", 0.18);
+        playTone(ctx, 1318.5, now + 0.1, 0.16, "sine", 0.18);
+      } else {
+        playTone(ctx, 220, now, 0.22, "sine", 0.16);
+        playTone(ctx, 164.81, now + 0.14, 0.22, "sine", 0.16);
+      }
+    } catch (_) {
+      // Âm thanh chỉ là phần bổ trợ; bỏ qua nếu trình duyệt chặn.
+    }
+  }
+
   function shuffle(items) {
     const copy = [...items];
     for (let index = copy.length - 1; index > 0; index -= 1) {
@@ -447,6 +488,7 @@
   }
 
   function recordResult(word, isCorrect) {
+    playFeedbackSound(isCorrect);
     const key = wordKey(word);
     const previous = state.progress.get(key) || sanitizeProgress({});
     const streak = isCorrect ? previous.streak + 1 : 0;
