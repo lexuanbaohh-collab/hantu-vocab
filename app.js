@@ -612,8 +612,11 @@
       elements.authMessage.className = "form-message success";
       return;
     }
+    state.session = result.data.session;
+    renderAccountState();
     elements.accountDialog.close();
     showToast("Đăng nhập thành công. Đang đồng bộ tiến độ…");
+    await loadCloudProgress();
   }
 
   async function signOut() {
