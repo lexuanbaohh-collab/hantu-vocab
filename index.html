@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Học từ vựng tiếng Trung bằng thẻ lật, trắc nghiệm, tự luận và ôn lại từ sai." />
+    <meta name="theme-color" content="#12355b" />
+    <title>Hán Tự — Học từ vựng tiếng Trung</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2312355b'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='38' font-family='sans-serif' font-weight='700' fill='white'%3E汉%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260921-5" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Về màn hình học từ vựng">
+          <span class="brand-mark" aria-hidden="true">汉</span>
+          <span>
+            <strong>Hán Tự</strong>
+            <small>Học từ vựng tiếng Trung</small>
+          </span>
+        </a>
+
+        <div class="top-actions">
+          <span class="sync-pill is-local" id="syncPill">Lưu trên máy</span>
+          <button class="icon-button" id="accountButton" type="button" aria-haspopup="dialog">
+            <span aria-hidden="true">◎</span>
+            <span id="accountButtonText">Đăng nhập</span>
+          </button>
+          <button class="icon-button icon-only-mobile" id="shuffleButton" type="button" title="Xáo trộn bộ từ">
+            <span aria-hidden="true">↝</span>
+            <span>Xáo trộn</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="study-header" aria-labelledby="setTitle">
+          <div>
+            <p class="eyebrow">GIÁO TRÌNH HÁN NGỮ · QUYỂN 3</p>
+            <h1 id="setTitle">Ôn từ vựng thông minh</h1>
+          </div>
+          <div class="set-count" aria-label="Số lượng từ trong bộ đang học">
+            <strong id="wordCount">0</strong>
+            <span>từ</span>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Tổng quan tiến độ">
+          <article><span>Đã học</span><strong id="studiedStat">0</strong></article>
+          <article><span>Đã nhớ</span><strong id="masteredStat">0</strong></article>
+          <article><span>Cần ôn</span><strong id="reviewStat">0</strong></article>
+          <article><span>Độ chính xác</span><strong id="accuracyStat">—</strong></article>
+        </section>
+
+        <section class="queue-bar" aria-label="Chọn nhóm từ muốn học">
+          <div class="queue-tabs" id="queueTabs" role="group" aria-label="Nhóm từ">
+            <button class="queue-tab is-active" type="button" data-queue="today">Hôm nay</button>
+            <button class="queue-tab" type="button" data-queue="wrong">Từ sai</button>
+            <button class="queue-tab" type="button" data-queue="all">Tất cả</button>
+            <button class="queue-tab" type="button" data-queue="mastered">Đã nhớ</button>
+          </div>
+          <p id="queueSummary">20 từ mới để bắt đầu</p>
+        </section>
+
+        <nav class="mode-tabs" aria-label="Chọn cách học" role="tablist">
+          <button class="mode-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="studyPanel" data-mode="flashcard">
+            <span aria-hidden="true">▱</span> Thẻ lật
+          </button>
+          <button class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="studyPanel" data-mode="quiz">
+            <span aria-hidden="true">✓</span> Trắc nghiệm
+          </button>
+          <button class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="studyPanel" data-mode="write">
+            <span aria-hidden="true">✎</span> Tự luận
+          </button>
+        </nav>
+
+        <section class="study-panel" id="studyPanel" role="tabpanel">
+          <div class="progress-row">
+            <span id="progressLabel">Từ 1 / 1</span>
+            <span id="scoreLabel">Đã nhớ 0</span>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+          <div id="studyArea" aria-live="polite"></div>
+          <div class="nav-row" id="navRow">
+            <button class="secondary-button" id="previousButton" type="button"><span aria-hidden="true">←</span> Từ trước</button>
+            <button class="primary-button" id="nextButton" type="button">Từ tiếp <span aria-hidden="true">→</span></button>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>Mẹo: nhấn phím cách để lật thẻ</span>
+        <span id="sessionStatus">Học theo nhịp của bạn</span>
+      </footer>
+    </div>
+
+    <dialog class="account-dialog" id="accountDialog" aria-labelledby="accountTitle">
+      <button class="dialog-close" id="closeAccountButton" type="button" aria-label="Đóng">×</button>
+      <div id="signedOutView">
+        <p class="eyebrow">ĐỒNG BỘ TIẾN ĐỘ</p>
+        <h2 id="accountTitle">Tài khoản học tập</h2>
+        <p class="dialog-intro">Đăng nhập để tiếp tục đúng tiến độ trên cả điện thoại và máy tính.</p>
+        <div class="auth-tabs" role="tablist" aria-label="Đăng nhập hoặc đăng ký">
+          <button class="auth-tab is-active" type="button" data-auth-mode="login">Đăng nhập</button>
+          <button class="auth-tab" type="button" data-auth-mode="signup">Tạo tài khoản</button>
+        </div>
+        <form id="authForm">
+          <label for="emailInput">Email</label>
+          <input id="emailInput" name="email" type="email" autocomplete="email" required placeholder="ban@example.com" />
+          <label for="passwordInput">Mật khẩu</label>
+          <input id="passwordInput" name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Từ 6 ký tự" />
+          <button class="primary-button auth-submit" id="authSubmitButton" type="submit">Đăng nhập</button>
+          <p class="form-message" id="authMessage" aria-live="polite"></p>
+        </form>
+        <p class="guest-note">Chưa đăng nhập vẫn học được; tiến độ sẽ chỉ lưu trên thiết bị này.</p>
+        <button class="guest-reset" id="resetGuestProgressButton" type="button">Xóa tiến độ trên máy này</button>
+      </div>
+      <div id="signedInView" hidden>
+        <p class="eyebrow">ĐÃ ĐỒNG BỘ</p>
+        <h2>Tài khoản của bạn</h2>
+        <p class="account-email" id="accountEmail"></p>
+        <p class="dialog-intro" id="accountSyncStatus">Tiến độ đang được lưu an toàn.</p>
+        <div class="account-actions">
+          <button class="secondary-button" id="logoutButton" type="button">Đăng xuất</button>
+          <button class="danger-button" id="resetProgressButton" type="button">Xóa tiến độ học</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase-config.js?v=20260921-5"></script>
+    <script src="./vocabulary.js?v=20260921-5"></script>
+    <script src="./app.js?v=20260921-5"></script>
+  </body>
+</html>
